@@ -38,6 +38,18 @@ func (cache *Cache) Get(key string) (data string, found bool) {
 	return
 }
 
+// Just check if exists, do not change anything
+//
+func (cache *Cache) Exists(key string) (found bool) {
+	cache.mutex.Lock()
+	item, found := cache.items[key]
+	if item.expired() {
+		found = false
+	}
+	cache.mutex.Unlock()
+	return
+}
+
 // Count returns the number of items in the cache
 // (helpful for tracking memory leaks)
 func (cache *Cache) Count() int {
